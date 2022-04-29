@@ -76,6 +76,12 @@
       border: 2px solid rgba(100, 100, 100, 0.5);
       border-radius: 5px;
     }
+    span{
+      color: red;
+    }
+    input[type="radio"]{
+      accent-color: black;
+    }
   </style>
 </head>
 <body>
@@ -86,48 +92,66 @@
       <div class="contactForm_flex">
         {{-- 名前 --}}
         <div class="contactForm_name">
-          <b>お名前</b>
+          <b>お名前<span>※</span></b>
           <div>
             <div>
               <input type="text" name="firstname">
+              @if($errors->has('firstname'))
+              <span>{{$errors -> first('firstname')}}</span>
+              @endif
               <p>（例）山田</p>
             </div>
             <div>
               <input type="text" name="lastname">
+              @if($errors->has('lastname'))
+              <span>{{$errors -> first('lastname')}}</span>
+              @endif
               <p>（例）太郎</p>
             </div>
           </div>
         </div>
         {{-- 性別 --}}
         <div class="contactForm_gender">
-          <b>性別</b>
+          <b>性別<span>※</span></b>
           <div>
             <input type="radio" name="gender" value="1" checked><b>男性</b>
             <input type="radio" name="gender" value="2"><b>女性</b>
+            @if($errors->has('gender'))
+            <span>{{$errors -> first('gender')}}</span>
+            @endif
           </div>
         </div>
         {{-- メールアドレス --}}
         <div>
-          <b>メールアドレス</b>
+          <b>メールアドレス<span>※</span></b>
           <div>
-            <input type="text" name="email">
+            <input type="email" name="email">
+            @if($errors->has('email'))
+            <span>{{$errors -> first('email')}}</span>
+            @endif
             <p>（例）test@example.com</p>
           </div>
         </div>
         {{-- 郵便番号 --}}
         <div class="contactForm_post">
-          <b>郵便番号</b>
+          <b>郵便番号<span>※</span></b>
           <b>〒</b>
           <div>
             <input type="text" name="postcode">
+            @if($errors->has('postcode'))
+            <span>{{$errors -> first('postcode')}}</span>
+            @endif
             <p>（例）123-4567</p>
           </div>
         </div>
         {{-- 住所 --}}
         <div>
-          <b>住所</b>
+          <b>住所<span>※</span></b>
           <div>
             <input type="text" name="address">
+            @if($errors->has('address'))
+            <span>{{$errors -> first('address')}}</span>
+            @endif
             <p>（例）東京都渋谷区千駄ヶ谷1-2-3</p>
           </div>
         </div>
@@ -141,9 +165,12 @@
         </div>
         {{-- ご意見 --}}
         <div>
-          <b>ご意見</b>
+          <b>ご意見<span>※</span></b>
           <div>
             <textarea name="opinion" rows="10"></textarea>
+            @if($errors->has('opinion'))
+            <span>{{$errors -> first('opinion')}}</span>
+            @endif
           </div>
         </div>
       </div>

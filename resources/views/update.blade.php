@@ -81,7 +81,7 @@
 <body>
   <div class="contactForm">
     <h1>お問い合わせ</h1>
-    <form action="{{route('confirm.contact')}}" method="POST">
+    <form action="{{route('create.contact')}}" method="POST">
     @csrf
       <div class="contactForm_flex">
         {{-- 名前 --}}
@@ -90,10 +90,16 @@
           <div>
             <div>
               <input type="text" name="firstname" value="{{$items['firstname']}}">
+              @if($errors->has('firstname'))
+              <span>{{$errors -> first('firstname')}}</span>
+              @endif
               <p>（例）山田</p>
             </div>
             <div>
               <input type="text" name="lastname" value="{{$items['lastname']}}">
+              @if($errors->has('lastname'))
+              <span>{{$errors -> first('lastname')}}</span>
+              @endif
               <p>（例）太郎</p>
             </div>
           </div>
@@ -108,13 +114,19 @@
             <input type="radio" name="gender" value="2"
             <?php if($items['gender'] === '2') echo 'checked';?>
             ><b>女性</b>
+            @if($errors->has('gender'))
+              <span>{{$errors -> first('gender')}}</span>
+              @endif
           </div>
         </div>
         {{-- メールアドレス --}}
         <div>
           <b>メールアドレス</b>
           <div>
-            <input type="text" name="email" value="{{$items['email']}}">
+            <input type="email" name="email" value="{{$items['email']}}">
+            @if($errors->has('email'))
+              <span>{{$errors -> first('email')}}</span>
+              @endif
             <p>（例）test@example.com</p>
           </div>
         </div>
@@ -124,6 +136,9 @@
           <b>〒</b>
           <div>
             <input type="text" name="postcode" value="{{$items['postcode']}}">
+            @if($errors->has('postcode'))
+              <span>{{$errors -> first('postcode')}}</span>
+              @endif
             <p>（例）123-4567</p>
           </div>
         </div>
@@ -132,6 +147,9 @@
           <b>住所</b>
           <div>
             <input type="text" name="address" value="{{$items['address']}}">
+            @if($errors->has('address'))
+              <span>{{$errors -> first('address')}}</span>
+              @endif
             <p>（例）東京都渋谷区千駄ヶ谷1-2-3</p>
           </div>
         </div>
@@ -139,7 +157,9 @@
         <div>
           <b>建物名</b>
           <div>
+            @if(!empty($item['building_name']))
             <input type="text" name="building_name" value="{{$items['building_name']}}">
+            @endif
             <p>（例）千駄ヶ谷マンション101</p>
           </div>
         </div>
@@ -148,6 +168,9 @@
           <b>ご意見</b>
           <div>
             <textarea name="opinion" rows="10">{{$items['opinion']}}</textarea>
+            @if($errors->has('opinion'))
+              <span>{{$errors -> first('opinion')}}</span>
+              @endif
           </div>
         </div>
       </div>

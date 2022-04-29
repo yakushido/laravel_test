@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use App\Http\Requests\ClientRequest;
 
 class testController extends Controller
 {
@@ -12,26 +13,38 @@ class testController extends Controller
         return view('index');
     }
 
-    public function show(Request $request)
+    public function show(ClientRequest $request)
     {
         $items = $request->all();
         $items['fullname'] = $request->firstname . ' ' . $request->lastname;
         return view('confirm', ['items' => $items]);
     }
 
-    public function create(Request $request)
+    public function create(ClientRequest $request)
     {
         $items = $request->all();
         $items['fullname'] = $request->firstname . ' ' . $request->lastname;
-        Contact::create([
-            'fullname' => $items['fullname'],
-            'gender' => $items['gender'],
-            'email' => $items['email'],
-            'postcode' => $items['postcode'],
-            'address' => $items['address'],
-            'building_name' => $items['building_name'],
-            'opinion' => $items['opinion']
-        ]);
+        if (!empty($items['building_name'])){
+            Contact::create([
+                'fullname' => $items['fullname'],
+                'gender' => $items['gender'],
+                'email' => $items['email'],
+                'postcode' => $items['postcode'],
+                'address' => $items['address'],
+                'building_name' => $items['building_name'],
+                'opinion' => $items['opinion']
+            ]);
+        }
+        elseif(empty($items['building_name'])){
+            Contact::create([
+                'fullname' => $items['fullname'],
+                'gender' => $items['gender'],
+                'email' => $items['email'],
+                'postcode' => $items['postcode'],
+                'address' => $items['address'],
+                'opinion' => $items['opinion']
+            ]);
+        }
         return view('thanks');
     }
 

@@ -1,3 +1,22 @@
+<style>
+    li{
+        list-style: none;
+        border: 1px solid black;
+        padding: 5px 10px;
+    }
+    ul{
+        display: flex;
+    }
+    a{
+        text-decoration: none;
+    }
+    .page-item.active{
+        background: #000;
+        color: white;
+    }
+</style>
+
+
 @if ($paginator->hasPages())
     <nav>
         <ul class="pagination">

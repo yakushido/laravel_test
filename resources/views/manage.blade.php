@@ -17,51 +17,75 @@ input:not([type='radio']){
   border-radius: 5px;
   margin:10px ;
 }
-label:not(:nth-of-type(2)){
+b:not(:nth-of-type(2)){
   display: inline-block;
   width: 150px;
 }
-label:nth-of-type(2){
-  margin-left: 20px;
-}
-input[type='radio']{
-  margin: 0 20px;
-}
+
 .button{
   text-align: center;
 }
-.button>button:first-child{
-      background-color: black;
-      color: white;
-      width: 150px;
-      height: 40px;
-      padding: 10px;
-      margin: 30px;
-    }
-    .button>button:last-child{
-      background:none; 
-      border: none;
-      text-decoration: underline;
-    }
-    .button>button:hover{
-      opacity:0.7;
-      cursor: pointer;
-    }
-    table{
-      border-collapse: collapse;
-    }
-    th{
-      border-bottom: 2px solid black;
-    }
-    th:not(:last-of-type){
-      width: 15%;
-    }
-    td:not(:last-of-type){
-      text-align: center;
-    }
-    td:last-of-type{
-      padding-left:40px; 
-    }
+.button>button{
+  background-color: black;
+  color: white;
+  width: 150px;
+  height: 40px;
+  padding: 10px;
+  margin: 30px;
+}
+.button>button:hover{
+  opacity:0.7;
+  cursor: pointer;
+}
+table{
+  border-collapse: collapse;
+}
+th{
+  border-bottom: 2px solid black;
+}
+th:not(:nth-of-type(6n-1)){
+  width: 10%;
+}
+td:not(:last-of-type){
+  text-align: center;
+}
+td:last-of-type{
+  padding-left:40px; 
+}
+.paginate{
+  display: flex;
+  justify-content: space-between;
+}
+.paginate>div{
+  display: flex;
+  align-items: center;
+}
+.delete_button{
+  width: 100%;
+  background-color:black;
+  color: white;
+}
+.delete_button:hover{
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+input[type="radio"]{
+  accent-color: black;
+}
+.opinion_full,
+.opinion_omit{
+  cursor: pointer;
+  transition: 2s;
+}
+.opinion_full{
+  display: none;
+}
+.opinion_omit.active{
+  display: none;
+}.opinion_full.active{
+  display: block;
+}
   </style>
 </head>
 <body>
@@ -70,38 +94,40 @@ input[type='radio']{
   @csrf
     <div class="serch">
       <div>
-        <label>お名前</label>
+        <b>お名前</b>
         <input type="text" name='fullname'>
-        <label>性別</label>
-        <input type="radio" name="gender" value='"1"||"2"' checked>全て
-        <input type="radio" name="gender" value="1">男性
-        <input type="radio" name="gender" value="2">女性
+        <b>性別</b>
+        <input type="radio" class="visually-hidden" name="gender" value='"1"||"2"' checked="checked"><label class="label">全て</label> 
+        <input type="radio" class="visually-hidden" name="gender" value="1"><label class="label">男性</label>
+        <input type="radio" class="visually-hidden" name="gender" value="2"><label class="label">女性</label>
       </div>
       <div>
-        <label>登録日</label>
+        <b>登録日</b>
         <input type="date" name="from" placeholder="from_date">
         <span>～<span>
         <input type="date" name="until" placeholder="until_date">
       </div>
       <div>
-        <label>メールアドレス</label>
-        <input type="text" name="email">
+        <b>メールアドレス</b>
+        <input type="email" name="email">
       </div>
       <div class="button">
         <button>検索</button><br>
-        <button>リセット</button>
+        <a href="/manage">リセット</a>
       </div>
     </div>
   </form>
   <div>
     <table>
       <tr>
-        <th>ID</th><th>お名前</th><th>性別</th><th>メールアドレス</th><th>ご意見</th>
+        <th>ID</th><th>お名前</th><th>性別</th><th>メールアドレス</th><th>ご意見</th><th></th>
       </tr>
-      {{ $items->links('vendor.pagination.default') }}
-      <p>全{{ $items->total() }}件中 
-       {{  ($items->currentPage() -1) * $items->perPage() + 1}} - 
-       {{ (($items->currentPage() -1) * $items->perPage() + 1) + (count($items) -1)  }}件</p>
+      <div class="paginate">
+        <div>全{{ $items->total() }}件中 
+        {{  ($items->currentPage() -1) * $items->perPage() + 1}} - 
+        {{ (($items->currentPage() -1) * $items->perPage() + 1) + (count($items) -1)  }}件</div>
+        <div>{{ $items->links('vendor.pagination.bootstrap-4') }}</div>
+      </div>
       @foreach($items as $item)
         <tr>
           <td>{{$item->id}}</td>
@@ -114,16 +140,32 @@ input[type='radio']{
             @endif
           </td>
           <td>{{$item->email}}</td>
-          <td>{{mb_strimwidth($item->opinion,0,25,'...')}}</td>
+          <td id="opinion">
+            <div>
+              <p id="opinion_omit" class="opinion_omit">{{mb_strimwidth($item->opinion,0,25,'...')}}</p>
+              <p id="opinion_full" class="opinion_full">{{$item->opinion}}</p>
+            </div>
+          </td>
           <td>
             <form action="{{route('delete.contact',[$item->id])}}" method="POST">
             @csrf
-              <button>削除</button>
+              <button class="delete_button">削除</button>
             </form>
           </td>
         </tr>
       @endforeach
       </table>
   </div>
+
+  <script>
+    const opinion = document.getElementById('opinion');
+    const omit = document.getElementById('opinion_omit');
+    const full = document.getElementById('opinion_full');
+
+    opinion.addEventListener('mouseover', () => {
+      omit.classList.toggle('active');
+      full.classList.toggle('active');
+    });
+  </script>
 </body>
 </html>
